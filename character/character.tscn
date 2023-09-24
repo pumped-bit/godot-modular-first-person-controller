@@ -1,0 +1,215 @@
+[gd_scene load_steps=34 format=3 uid="uid://bkwoiyvtmrh3v"]
+
+[ext_resource type="Script" path="res://character/character.gd" id="1_8ptuk"]
+[ext_resource type="Script" path="res://framework/state_machine/state_machine_master.gd" id="2_0ktyt"]
+[ext_resource type="Script" path="res://character/components/ledge_climb_detector.gd" id="2_4rwj7"]
+[ext_resource type="Script" path="res://character/weapon_adapter/weapon_adapter.gd" id="3_dax6p"]
+[ext_resource type="Script" path="res://character/state/movement/movement_state_machine.gd" id="3_j6qxm"]
+[ext_resource type="Script" path="res://character/character_context.gd" id="3_le57n"]
+[ext_resource type="Script" path="res://character/state/movement/base_state.gd" id="3_lmxij"]
+[ext_resource type="Script" path="res://character/state/movement/move_state.gd" id="4_ulfdm"]
+[ext_resource type="Script" path="res://character/state/movement/jump_state.gd" id="6_jyk71"]
+[ext_resource type="Script" path="res://character/state/movement/fall_state.gd" id="7_orrmg"]
+[ext_resource type="Script" path="res://character/state/movement/dash_state.gd" id="8_tqv3m"]
+[ext_resource type="Script" path="res://character/behavior/character_behavior_manager.gd" id="9_gdmj6"]
+[ext_resource type="Script" path="res://character/behavior/run_behavior.gd" id="10_sf5su"]
+[ext_resource type="Script" path="res://character/ability/character_ability_manager.gd" id="11_lnmr7"]
+[ext_resource type="Script" path="res://character/state/movement/climb_big_ledge.gd" id="11_wqwtb"]
+[ext_resource type="Script" path="res://character/behavior/head_rotation_behavior.gd" id="12_w2loj"]
+[ext_resource type="Script" path="res://character/character_properties.gd" id="13_grp7o"]
+[ext_resource type="Script" path="res://character/behavior/gravity_behavior.gd" id="13_jpoc7"]
+[ext_resource type="Script" path="res://character/behavior/camera_tilting.gd" id="14_q0o5p"]
+[ext_resource type="Script" path="res://character/ability/jump.gd" id="15_7e10h"]
+[ext_resource type="Script" path="res://character/ability/dash.gd" id="16_at0gc"]
+[ext_resource type="Script" path="res://character/ability/air_jump.gd" id="16_nkbm1"]
+[ext_resource type="Script" path="res://character/behavior/ledge_climbing_behavior.gd" id="16_tto0q"]
+[ext_resource type="Script" path="res://character/ability/climb_ledge_small_ability.gd" id="21_6siel"]
+[ext_resource type="Script" path="res://character/ability/climb_ledge_big_ability.gd" id="22_2qrtd"]
+[ext_resource type="PackedScene" uid="uid://drkp7o2r7e1us" path="res://weapon/debug_gun/debug_gun.tscn" id="24_tt4ws"]
+[ext_resource type="Script" path="res://character/behavior/weapon_handling_behavior.gd" id="25_pdxtc"]
+[ext_resource type="Shader" path="res://character/speedlines.gdshader" id="28_ysel8"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_suud8"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_axeen"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_w0hgg"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_oft7d"]
+noise = SubResource("FastNoiseLite_w0hgg")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_n4tgs"]
+shader = ExtResource("28_ysel8")
+shader_parameter/line_color = Color(1, 1, 1, 0.952941)
+shader_parameter/line_count = 1.3
+shader_parameter/line_density = 0.265
+shader_parameter/line_faloff = 0.366
+shader_parameter/mask_size = 0.166
+shader_parameter/mask_edge = 0.425
+shader_parameter/animation_speed = 15.586
+shader_parameter/noise = SubResource("NoiseTexture2D_oft7d")
+
+[node name="Character" type="CharacterBody3D" node_paths=PackedStringArray("head", "camera", "state_machine_master", "behavior_manager", "ability_manager", "properties")]
+script = ExtResource("1_8ptuk")
+head = NodePath("Components/Head")
+camera = NodePath("Components/Head/Camera3D")
+state_machine_master = NodePath("StateMachineMaster")
+behavior_manager = NodePath("BehaviorManager")
+ability_manager = NodePath("AbilityManager")
+properties = NodePath("Properties")
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_suud8")
+
+[node name="Components" type="Node3D" parent="."]
+
+[node name="Head" type="Node3D" parent="Components"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Components/Head"]
+fov = 100.7
+
+[node name="WeaponAdapter" type="Node3D" parent="Components/Head" node_paths=PackedStringArray("context")]
+script = ExtResource("3_dax6p")
+context = NodePath("../../../CharacterContext")
+
+[node name="LedgeClimbDetector" type="Node3D" parent="Components" node_paths=PackedStringArray("head_raycast", "shoulder_raycast", "foot_raycast", "head")]
+script = ExtResource("2_4rwj7")
+head_raycast = NodePath("HeadRaycast")
+shoulder_raycast = NodePath("ShoulderRaycast")
+foot_raycast = NodePath("FootRaycast")
+head = NodePath("../Head")
+
+[node name="HeadRaycast" type="RayCast3D" parent="Components/LedgeClimbDetector"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2574, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="ShoulderRaycast" type="RayCast3D" parent="Components/LedgeClimbDetector"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.568152, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="FootRaycast" type="RayCast3D" parent="Components/LedgeClimbDetector"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.712834, 0)
+target_position = Vector3(0, 0, -1.1)
+
+[node name="Mesh" type="MeshInstance3D" parent="Components"]
+mesh = SubResource("CapsuleMesh_axeen")
+skeleton = NodePath("../..")
+
+[node name="CharacterContext" type="Node" parent="." node_paths=PackedStringArray("character", "state_machine_master", "behavior_manager", "ability_manager", "properties", "ledge_climb_detector", "weapon_adapter")]
+script = ExtResource("3_le57n")
+character = NodePath("..")
+state_machine_master = NodePath("../StateMachineMaster")
+behavior_manager = NodePath("../BehaviorManager")
+ability_manager = NodePath("../AbilityManager")
+properties = NodePath("../Properties")
+ledge_climb_detector = NodePath("../Components/LedgeClimbDetector")
+weapon_adapter = NodePath("../Components/Head/WeaponAdapter")
+
+[node name="Properties" type="Node" parent="."]
+script = ExtResource("13_grp7o")
+
+[node name="StateMachineMaster" type="Node" parent="."]
+script = ExtResource("2_0ktyt")
+
+[node name="MovementStateMachine" type="Node" parent="StateMachineMaster" node_paths=PackedStringArray("context")]
+script = ExtResource("3_j6qxm")
+context = NodePath("../../CharacterContext")
+initial_state = NodePath("BaseState")
+
+[node name="BaseState" type="Node" parent="StateMachineMaster/MovementStateMachine"]
+script = ExtResource("3_lmxij")
+
+[node name="Move" type="Node" parent="StateMachineMaster/MovementStateMachine"]
+script = ExtResource("4_ulfdm")
+
+[node name="Jump" type="Node" parent="StateMachineMaster/MovementStateMachine"]
+script = ExtResource("6_jyk71")
+
+[node name="Fall" type="Node" parent="StateMachineMaster/MovementStateMachine"]
+script = ExtResource("7_orrmg")
+
+[node name="Dash" type="Node" parent="StateMachineMaster/MovementStateMachine" node_paths=PackedStringArray("speed_lines")]
+script = ExtResource("8_tqv3m")
+speed_lines = NodePath("../../../CanvasLayer/SpeedLines")
+
+[node name="ClimbBigLedge" type="Node" parent="StateMachineMaster/MovementStateMachine"]
+script = ExtResource("11_wqwtb")
+force = 10.0
+acceleration = 1.0
+
+[node name="BehaviorManager" type="Node" parent="." node_paths=PackedStringArray("context")]
+script = ExtResource("9_gdmj6")
+context = NodePath("../CharacterContext")
+
+[node name="Run" type="Node" parent="BehaviorManager"]
+script = ExtResource("10_sf5su")
+
+[node name="HeadRotation" type="Node" parent="BehaviorManager"]
+script = ExtResource("12_w2loj")
+camera_sensitivity = 9.05
+
+[node name="Gravity" type="Node" parent="BehaviorManager"]
+script = ExtResource("13_jpoc7")
+
+[node name="CameraTilting" type="Node" parent="BehaviorManager" node_paths=PackedStringArray("camera")]
+script = ExtResource("14_q0o5p")
+force = 4.0
+acceleration = 0.02
+camera = NodePath("../../Components/Head/Camera3D")
+
+[node name="LedgeClimbing" type="Node" parent="BehaviorManager"]
+script = ExtResource("16_tto0q")
+
+[node name="WeaponHandling" type="Node" parent="BehaviorManager"]
+script = ExtResource("25_pdxtc")
+
+[node name="AbilityManager" type="Node" parent="." node_paths=PackedStringArray("context")]
+script = ExtResource("11_lnmr7")
+context = NodePath("../CharacterContext")
+
+[node name="Jump" type="Node" parent="AbilityManager"]
+script = ExtResource("15_7e10h")
+force = 10.0
+is_enabled = true
+is_instant = true
+
+[node name="AirJump" type="Node" parent="AbilityManager"]
+script = ExtResource("16_nkbm1")
+force = 10.0
+is_enabled = true
+is_instant = true
+has_cooldown = true
+cooldown_time = 1.0
+
+[node name="Dash" type="Node" parent="AbilityManager"]
+script = ExtResource("16_at0gc")
+is_enabled = true
+duration = 0.2
+has_cooldown = true
+cooldown_time = 1.0
+
+[node name="ClimbSmallLedge" type="Node" parent="AbilityManager"]
+script = ExtResource("21_6siel")
+force = 5.0
+is_enabled = true
+duration = 0.2
+
+[node name="ClimbBigLedge" type="Node" parent="AbilityManager"]
+script = ExtResource("22_2qrtd")
+is_enabled = true
+duration = 0.1
+
+[node name="DebugGun" parent="." instance=ExtResource("24_tt4ws")]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+follow_viewport_enabled = true
+
+[node name="SpeedLines" type="ColorRect" parent="CanvasLayer"]
+material = SubResource("ShaderMaterial_n4tgs")
+anchors_preset = -1
+anchor_right = 0.035
+anchor_bottom = 0.063
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(28.64, 16.16)

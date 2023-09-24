@@ -1,0 +1,70 @@
+[gd_scene load_steps=5 format=3 uid="uid://c6fu5xbovk5kk"]
+
+[ext_resource type="Script" path="res://scenes/level/main.gd" id="1_a0chi"]
+[ext_resource type="PackedScene" uid="uid://6wln5g784skg" path="res://scenes/level/test_level/test_level.tscn" id="1_yoxrc"]
+[ext_resource type="Theme" uid="uid://gpgr2k8n557v" path="res://main_gui_theme/simple_box_theme.tres" id="2_1drsp"]
+[ext_resource type="FontFile" uid="uid://b4gfr8dubs16f" path="res://assets/fonts/epic_font.ttf" id="3_db0kv"]
+
+[node name="World" type="Node"]
+script = ExtResource("1_a0chi")
+
+[node name="test_level" parent="." instance=ExtResource("1_yoxrc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.16646, 0)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="MainMenu" type="PanelContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_1drsp")
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/MainMenu"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/MainMenu/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="Label" type="Label" parent="CanvasLayer/MainMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_db0kv")
+theme_override_font_sizes/font_size = 50
+text = "Mega stupid game
+"
+horizontal_alignment = 1
+
+[node name="Label2" type="Label" parent="CanvasLayer/MainMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "Main Menu
+"
+horizontal_alignment = 1
+
+[node name="HostButton" type="Button" parent="CanvasLayer/MainMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Host
+"
+
+[node name="JoinButton" type="Button" parent="CanvasLayer/MainMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Join
+"
+
+[node name="AddresEntry" type="LineEdit" parent="CanvasLayer/MainMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+placeholder_text = "Enter IP address to join"
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://scenes/player/player.tscn")
+spawn_path = NodePath("..")
+
+[connection signal="pressed" from="CanvasLayer/MainMenu/MarginContainer/VBoxContainer/HostButton" to="." method="_on_host_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/MainMenu/MarginContainer/VBoxContainer/JoinButton" to="." method="_on_join_button_pressed"]

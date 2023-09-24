@@ -1,0 +1,46 @@
+[gd_scene load_steps=3 format=3 uid="uid://6wln5g784skg"]
+
+[ext_resource type="Environment" uid="uid://yeughf17bk64" path="res://scenes/level/test_level/env.tres" id="1_h2i6g"]
+[ext_resource type="Material" uid="uid://bp72fx41vo7c3" path="res://materials/orange_protorype.tres" id="2_mhhkc"]
+
+[node name="test_level" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("1_h2i6g")
+
+[node name="Level" type="Node3D" parent="."]
+
+[node name="Floor" type="Node3D" parent="Level"]
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="Level/Floor"]
+material_override = ExtResource("2_mhhkc")
+operation = 1
+calculate_tangents = false
+use_collision = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Level/Floor/CSGCombiner3D"]
+size = Vector3(100, 1, 100)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Level/Floor/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 1.68212, 0)
+size = Vector3(5, 5, 5)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Level/Floor/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 1.58093, -7)
+size = Vector3(5, 2.34845, 5)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="Level/Floor/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 0.342861, -14.0262)
+size = Vector3(5, 2.34845, 5)
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="Level/Floor/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 4.90505, -0.0261526)
+size = Vector3(5, 2.34845, 5)
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="Level/Floor/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.91847, 4.90505, -0.0261526)
+size = Vector3(5, 2.34845, 5)
+
+[node name="CSGBox3D7" type="CSGBox3D" parent="Level/Floor/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.22, 4.90505, -0.0261526)
+size = Vector3(5, 2.34845, 5)

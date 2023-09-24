@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3 uid="uid://dykap2pt4i1og"]
+
+[ext_resource type="Shader" uid="uid://bwxpm628vcfhl" path="res://scenes/weapons/projectile/energy_ball_projectile.tres" id="1_cdkju"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_kcl8f"]
+radius = 0.25
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_owv8n"]
+render_priority = 0
+shader = ExtResource("1_cdkju")
+
+[sub_resource type="SphereMesh" id="SphereMesh_lrn6g"]
+material = SubResource("ShaderMaterial_owv8n")
+radius = 0.25
+height = 0.5
+
+[node name="EnergyBallProjectile" type="RigidBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_kcl8f")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_lrn6g")

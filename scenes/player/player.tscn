@@ -1,0 +1,65 @@
+[gd_scene load_steps=6 format=3 uid="uid://bp7rwgtld16lq"]
+
+[ext_resource type="Script" path="res://scenes/player/player.gd" id="1_55v0m"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_ch7n1"]
+radius = 0.3
+height = 1.8
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3rsb5"]
+radius = 0.3
+height = 1.8
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_daxu7"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/sync = true
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/sync = true
+properties/2/path = NodePath("Camera:rotation")
+properties/2/spawn = true
+properties/2/sync = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_o83yy"]
+size = Vector3(0.309853, 0.0829115, 0.851212)
+
+[node name="Player" type="CharacterBody3D"]
+collision_layer = 2
+script = ExtResource("1_55v0m")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+mesh = SubResource("CapsuleMesh_ch7n1")
+
+[node name="CShape" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CapsuleShape3D_3rsb5")
+
+[node name="Camera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
+fov = 80.0
+
+[node name="WeaponParent" type="Node3D" parent="Camera"]
+
+[node name="BulletSpawnPoint" type="Node3D" parent="Camera/WeaponParent"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.818564)
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_daxu7")
+
+[node name="LedgeDetectorFoot" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.390705, -0.14672)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LedgeDetectorFoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.737091, -0.426801)
+shape = SubResource("BoxShape3D_o83yy")
+
+[node name="LedgeDetectorShoulder" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.724417, -0.14672)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LedgeDetectorShoulder"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.737091, -0.426801)
+shape = SubResource("BoxShape3D_o83yy")
+
+[connection signal="body_shape_entered" from="LedgeDetectorShoulder" to="." method="_on_ledge_detector_shoulder_body_shape_entered"]
